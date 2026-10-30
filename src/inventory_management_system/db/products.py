@@ -18,14 +18,16 @@ def add_product(
 
 
     Returns:
-        int: index of row added
+        sqlite row: product_id, name, and SKU of the added product
     """
     with conn:
         cursor = conn.execute(
-            "INSERT INTO products(SKU, name, category, supplier, unit_price, quantity, reorder_level) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO products(SKU, name, category, supplier, unit_price, quantity, reorder_level) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?) "
+            "RETURNING id AS product_id, name, SKU",
             (SKU, name, category, supplier_id, unit_price, quantity, reorder_level),
         )
-    return cursor.lastrowid
+        return cursor.fetchone()
 
 
 def get_product_with_supplier(conn, SKU):

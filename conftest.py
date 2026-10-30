@@ -17,3 +17,14 @@ def mem_db():
     conn = connect(":memory:")
     conn.executescript(SCHEMA_PATH.read_text())
     return conn
+
+
+@pytest.fixture
+def supplier_id(mem_db):
+    """Insert one supplier and return its id."""
+    with mem_db:
+        cursor = mem_db.execute(
+            "INSERT INTO suppliers(name) VALUES (?)",
+            ("abc",),
+        )
+    return cursor.lastrowid
